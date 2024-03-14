@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+
+<h2>Flight Details</h2>
+<section>
+    <div><strong>Airline:</strong> <%= flight.airline %></div>
+    <div><strong>Flight #:</strong> <%= flight.flightNo %></div>
+    <div><strong>Departure Airport:</strong> <%= flight.departureAirport %></div>
+    <div><strong>Departure Date/Time:</strong> <%= flight.departs.toLocaleString() %></div>
+    <div><strong>Arrival Airport:</strong> <%= flight.arrivalAirport %></div>
+    <div><strong>Arrival Date/Time:</strong> <%= flight.arrival.toLocaleString() %></div>
+</section>
+
+<h3>Tickets</h3>
+<% if (tickets && tickets.length > 0) { %>
+  <ul>
+    <% tickets.forEach(function(ticket) { %>
+      <li>Seat: <%= ticket.seat %>, Price: $<%= ticket.price.toFixed(2) %></li>
+    <% }); %>
+  </ul>
+<% } else { %>
+  <p>No tickets have been added yet.</p>
+<% } %>
+
+<a href="/flights/<%= flight._id %>/tickets/new">Add New Ticket</a>
+
+<%- include('../partials/footer') %>
