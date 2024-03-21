@@ -1,0 +1,23 @@
+<%- include('../partials/header2.0.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Bet</h1>
+    <form action="/bets/<%= bet._id %>?_method=PUT" method="POST">
+      <label>Result:</label>
+      <select name="result">
+        <option value="Win" <%= bet.result === 'Win' ? 'selected' : '' %>>Win</option>
+        <option value="Loss" <%= bet.result === 'Loss' ? 'selected' : '' %>>Loss</option>
+      </select>
+      <button type="submit">Update</button>
+    </form>
+  </div>
+</body>
+</html>
+<%- include('../partials/footer.ejs') %>

@@ -9,6 +9,7 @@ require('./config/database')
 
 const indexRouter = require('./routes/index');
 const betsRouter = require('./routes/bets');
+const commentsRouter = require('./routes/comments');
 const methodOverride = require('method-override');
 
 var app = express();
@@ -26,7 +27,7 @@ app.use(methodOverride('_method'));
 
 app.use('/', indexRouter);
 app.use('/bets', betsRouter);
-
+app.use('/bets', commentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

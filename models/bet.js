@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+const Schema = mongoose.Schema
+
+const commentsSchema = new Schema({
+  content: {
+      type: String,
+      require: true
+  },
+}, {
+  timestamps: true
+});
+
 const betSchema = new mongoose.Schema({
   league: {
     type: String,
@@ -40,6 +51,9 @@ const betSchema = new mongoose.Schema({
     type: Number, 
     default: 0 
   },
+  comments: [commentsSchema]
+}, {
+  timestamps: true
 });
 
 const Bet = mongoose.model('Bet', betSchema);

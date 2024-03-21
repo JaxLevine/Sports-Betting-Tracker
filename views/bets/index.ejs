@@ -66,11 +66,35 @@
                   <form action="/bets/<%= bet._id %>?_method=DELETE" method="POST">
                     <button type="submit">Delete</button>
                   </form>
-                </td>          
+                </td>
+                <td>
+                  <form action="/bets/<%= bet._id %>/edit" method="GET">
+                    <button type="submit">Edit</button>
+                  </form>
+                </td>
               </tr>
             <% }); %>
           </tbody>
         </table>
+        <br><br><h2>Comments</h2>
+        <% groupedBets[date].forEach((bet) => { %>
+          <% if (bet.comments.length) { %>
+            <ul>
+              <% bet.comments.forEach(function(comment) { %>
+                <li>
+                  <%= comment.content %> - <%= comment.createdAt.toLocaleDateString() %>
+                </li>
+              <% }); %>
+            </ul>
+          <% } else { %>
+            <p>No comments yet.</p>
+          <% } %>
+          <form id="add-comment-form" method="POST" action="/bets/<%= bet._id %>/comments">
+            <label>Comment:</label>
+            <textarea name="content"></textarea>
+            <input type="submit" value="Add Comment">
+          </form>
+        <% }); %>
       <% }); %>
     <% } else { %>
       <p>No bets found.</p>
