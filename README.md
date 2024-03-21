@@ -16,4 +16,4 @@ A full-stack bet tracking application that allows users to log and track their s
 
 # Getting Started
 
-https://stormy-citadel-42562-3101a4e2fbd6.herokuapp.com/
+https://jaxlevine.github.io/
