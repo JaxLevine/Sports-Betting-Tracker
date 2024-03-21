@@ -49,7 +49,6 @@ const list = async function(req, res) {
         groupedBets[date] = [];
       }
       groupedBets[date].push(bet);
-
       if (bet.result === 'Win') {
         dynamicWins++;
       } else if (bet.result === 'Loss') {
