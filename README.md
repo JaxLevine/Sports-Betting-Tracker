@@ -16,7 +16,7 @@ A full-stack bet tracking application that allows users to log and track their s
 
 # Getting Started
 
-https://jaxlevine.github.io/sports-betting-tracker
+https://sports-betting-tracker-826d3477e2fc.herokuapp.com/
 
 
 # Next Steps
