@@ -1,9 +1,16 @@
-var express = require('express');
-var router = express.Router();
+// routes/index.js
+const express = require('express');
+const router = express.Router();
+const Bet = require('../models/bet');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Mongoos Flights Lab' });
+// GET home page
+router.get('/', async (req, res, next) => {
+    try {
+        const bets = await Bet.find().sort({ datePlaced: -1 }).limit(5);
+        res.render('index', { bets });
+      } catch (error) {
+        next(error);
+      }
 });
 
 module.exports = router;

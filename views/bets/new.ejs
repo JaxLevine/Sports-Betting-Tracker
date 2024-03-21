@@ -1,0 +1,486 @@
+<%- include('../partials/header.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Bet</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Add New Bet</h1>
+    <form action="/bets" method="post">
+        <div>
+            <label for="league">League:</label>
+            <select name="league" id="league">
+                <option value="NBA">NBA</option>
+            </select>
+        </div>
+        <div>
+            <label for="team">Team:</label>
+            <select name="team" id="team">
+
+            </select>
+        </div>
+        <div>
+            <label for="player">Player:</label>
+            <select name="player" id="player">
+                 
+            </select>
+        </div>
+        <div>
+            <label for="odds">Odds:</label>
+            <input type="number" name="odds" id="odds" required>
+        </div>
+        <div>
+            <label for="betType">Bet Type:</label>
+            <select name="betType" id="betType" onchange="togglePropDetails(this.value)">
+                <option value="Moneyline">Moneyline</option>
+                <option value="Spread">Spread</option>
+                <option value="Total">Total</option>
+                <option value="Prop">Prop</option>
+            </select>
+        </div>
+        <div id="propDetails" style="display:none;">
+            <label for="propDetails">Prop Type:</label>
+            <select name="propDetails" id="propDetails">
+                <option value="Points">Points</option>
+                <option value="Assists">Assists</option>
+                <option value="Rebounds">Rebounds</option>
+                <option value="Points+Assists">Points + Assists</option>
+                <option value="Points+Rebounds">Points + Rebounds</option>
+                <option value="Points+Rebounds+Assists">Points + Rebounds + Assists</option>
+                <option value="Rebounds+Assists">Rebounds + Assists</option>
+                <option value="Steals">Steals</option>
+                <option value="Blocks">Blocks</option>
+                <option value="Threes Made">Threes Made</option>
+            </select>
+        </div>
+        <div>
+            <label for="result">Result:</label>
+            <select name="result" id="result">
+                <option value="Win">Win</option>
+                <option value="Loss">Loss</option>
+            </select>
+        </div>
+        <div>
+          <label for="datePlaced">Date Placed:</label>
+          <input type="date" id="datePlaced" name="datePlaced" required>
+        </div>
+        <button type="submit">Add Bet</button>
+    </form>
+
+    <script>
+const nbaTeams = [
+  {
+    name: 'Atlanta Hawks',
+    players: [
+      { name: 'Trae Young' },
+      { name: 'Clint Capela' },
+      { name: 'Dejounte Murray' },
+      { name: 'Vit Krejci' },
+      { name: "De'Andre Hunter" },
+      { name: 'Onyeka Okongwu' },
+      { name: 'Bogdan Bogdanovic' },
+      { name: 'Saddiq Bey' },
+      { name: 'Jalen Johnson' },
+      { name: 'Garrison Matthews' },
+    ]
+  },
+  {
+    name: 'Boston Celtics',
+    players: [
+      { name: 'Jayson Tatum' },
+      { name: 'Jaylen Brown' },
+      { name: 'Jrue Holiday' },
+      { name: 'Al Horford' },
+      { name: 'Kristaps Prozingis' },
+      { name: 'Derrick White' },
+      { name: 'Sam Hauser' },
+      { name: 'Payton Pritchard' },
+    ]
+  },
+  {
+    name: 'Brooklyn Nets',
+    players: [
+      { name: 'Mikal Bridges' },
+      { name: 'Cameron Johnson' },
+      { name: 'Dennis Smith Jr.' },
+      { name: 'Ben Simmons' },
+      { name: 'Dennis Schroder' },
+      { name: 'Cam Thomas' },
+      { name: 'Nic Claxton' },
+      { name: 'Dorian Finney-Smith' },
+      { name: 'Lonnie Walker' },
+    ]
+  },
+  {
+    name: 'Charlotte Hornets',
+    players: [
+      { name: 'LaMelo Ball' },
+      { name: 'Miles Bridges' },
+      { name: 'Grant Williams' },
+      { name: 'Nick Richards' },
+      { name: 'Vasilije Micic' },
+      { name: 'Tre Mann' },
+      { name: 'Brandon Miller' },
+      { name: 'Cody Martin' },
+    ]
+  },
+  {
+    name: 'Chicago Bulls',
+    players: [
+      { name: 'Zach LaVine' },
+      { name: 'Nikola Vucevic' },
+      { name: 'DeMar DeRozan' },
+      { name: 'Coby White' },
+      { name: 'Patrick Williams' },
+      { name: 'Ayo Dosunmu' },
+      { name: 'Alex Caruso' },
+    ]
+  },
+  {
+    name: 'Cleveland Cavaliers',
+    players: [
+      { name: 'Darius Garland' },
+      { name: 'Evan Mobley' },
+      { name: 'Jarrett Allen' },
+      { name: 'Max Strus' },
+      { name: 'Isaac Okoro' },
+      { name: 'Sam Merrill' },
+      { name: 'Caris LeVert' },
+      { name: 'Donovan Mitchell' },
+    ]
+  },
+  {
+    name: 'Dallas Mavericks',
+    players: [
+      { name: 'Luka Doncic' },
+      { name: 'Daniel Gafford' },
+      { name: 'Josh Green' },
+      { name: 'Tim Hardaway Jr.' },
+      { name: 'Kyrie Irving' },
+      { name: 'Dereck Lively II' },
+      { name: 'P.J Washington' },
+      { name: 'Dwight Powell' },
+      { name: 'Maxi Kleber' },
+      { name: 'Dante Exum' },
+    ]
+  },
+  {
+    name: 'Denver Nuggets',
+    players: [
+      { name: 'Nikola Jokic' },
+      { name: 'Jamal Murray' },
+      { name: 'Aaron Gordon' },
+      { name: 'Michael Porter Jr.' },
+      { name: 'Kentavious Caldwell-Pope' },
+      { name: 'Reggie Jackson' },
+      { name: 'Peyton Watson' },
+      { name: 'Christian Braun' },
+    ]
+  },
+  {
+    name: 'Detroit Pistons',
+    players: [
+      { name: 'Cade Cunningham' },
+      { name: 'Jaden Ivey' },
+      { name: 'Jalen Duren' },
+      { name: 'Isaiah Stewart' },
+      { name: 'Killian Hayes' },
+      { name: 'Asur Thompson' },
+    ]
+  },
+  {
+    name: 'Golden State Warriors',
+    players: [
+      { name: 'Stephen Curry' },
+      { name: 'Klay Thompson' },
+      { name: 'Draymond Green' },
+      { name: 'Brandin Podziemski' },
+      { name: 'Andrew Wiggins' },
+      { name: 'Kevon Looney' },
+      { name: 'Chris Paul'},
+      { name: 'Jonathan Kuminga' },
+      { name: 'Trayce Jackson-Davis' },
+    ]
+  },
+{
+  name: 'Houston Rockets',
+  players: [
+    { name: 'Jalen Green' },
+    { name: 'Jabari Smith Jr.' },
+    { name: 'Fred VanVleet' },
+    { name: 'Alperen Sengun' },
+    { name: "Jae'Sean Tate" },
+    { name: 'Amen Thompson' },
+    { name: 'Dillon Books' },
+  ]
+},
+{
+  name: 'Indiana Pacers',
+  players: [
+    { name: 'Tyrese Haliburton' },
+    { name: 'Bennedict Mathurin' },
+    { name: 'Obi Toppin' },
+    { name: 'Myles Turner' },
+    { name: 'Andrew Nembhard' },
+    { name: 'TJ McConnell' },
+    { name: 'Pascal Siakam' },
+    { name: 'Aaron Nesmith' },
+    { name: 'Jalen Smith' },
+  ]
+},
+{
+  name: 'Los Angeles Clippers',
+  players: [
+    { name: 'Kawhi Leonard' },
+    { name: 'Paul George' },
+    { name: 'Russell Westbrook' },
+    { name: 'Marcus Morris Sr.' },
+    { name: 'Terence Mann' },
+    { name: 'James Harden' },
+    { name: 'Norman Powell' },
+    { name: 'Mason Plumlee' },
+    { name: 'Daniel Theis' },
+  ]
+},
+{
+  name: 'Los Angeles Lakers',
+  players: [
+    { name: 'LeBron James' },
+    { name: 'Anthony Davis' },
+    { name: 'Spencer Dinwiddie' },
+    { name: 'Rui Hachimura' },
+    { name: 'Jaxson Hayes' },
+    { name: 'Taurean Prince' },
+    { name: 'Austin Reaves' },
+    { name: 'Cam Reddish' },
+    { name: "D'Angelo Russell" },
+  ]
+},
+{
+  name: 'Memphis Grizzlies',
+  players: [
+    { name: 'Ja Morant' },
+    { name: 'Scotty pippen Jr.' },
+    { name: 'Desmond Bane' },
+    { name: 'Jaren Jackson Jr.' },
+    { name: 'Ziaire Williams' },
+    { name: 'Santi Aldama' },
+    { name: 'Vince Williams Jr.' },
+    { name: 'Luke Kennard' },
+    { name: 'John Konchar' },
+    { name: 'Jake LaRavia' },
+  ]
+},
+{
+  name: 'Miami Heat',
+  players: [
+    { name: 'Jimmy Butler' },
+    { name: 'Bam Adebayo' },
+    { name: 'Nikola Jovic' },
+    { name: 'Tyler Herro' },
+    { name: 'Duncan Robinson' },
+    { name: 'Kevin Love' },
+    { name: 'Caleb Martin' },
+    { name: 'Patty Mills' },
+    { name: 'Terry Rozier III' },
+    { name: 'Josh Richardson' },
+  ]
+},
+{
+  name: 'Milwaukee Bucks',
+  players: [
+    { name: 'Giannis Antetokounmpo' },
+    { name: 'Damian Lillard' },
+    { name: 'Khris Middleton' },
+    { name: 'Brook Lopez' },
+    { name: 'Malik Beasley' },
+    { name: 'Pat Connaughton' },
+    { name: 'Bobby Portis' },
+    { name: 'Patrick Beverly' },
+    { name: 'Jae Crowder' },
+  ]
+},
+{
+  name: 'Minnesota Timberwolves',
+  players: [
+    { name: 'Karl-Anthony Towns' },
+    { name: 'Anthony Edwards' },
+    { name: "Mike Conley" },
+    { name: 'Jaden McDaniels' },
+    { name: 'Rudy Gobert' },
+    { name: 'Kyle Anderson' },
+    { name: 'Naz Reid' },
+  ]
+},
+{
+  name: 'New Orleans Pelicans',
+  players: [
+    { name: 'Zion Williamson' },
+    { name: 'Brandon Ingram' },
+    { name: 'CJ McCollum' },
+    { name: 'Jonas Valančiūnas' },
+    { name: 'Herbert Jones' },
+    { name: 'Dyson Daniels' },
+    { name: 'Trey Murphy III' },
+    { name: 'Jose Alvarado' },
+  ]
+},
+{
+  name: 'New York Knicks',
+  players: [
+    { name: 'Donte Divincenzo' },
+    { name: 'Julius Randle' },
+    { name: 'Josh Hart' },
+    { name: 'Derrick Rose' },
+    { name: 'Miles McBride' },
+    { name: 'Mitchell Robinson' },
+    { name: 'OG Anunoby' },
+    { name: 'Jalen Brunson' },
+    { name: 'Isiah Hartenstein' },
+  ]
+},
+{
+  name: 'Oklahoma City Thunder',
+  players: [
+    { name: 'Shai Gilgeous-Alexander' },
+    { name: 'Josh Giddey' },
+    { name: 'Chet Holmgren' },
+    { name: 'Jalen Williams' },
+    { name: 'Luguentz Dort' },
+    { name: 'Isiah Joe' },
+    { name: 'Gordon Hayward' },
+    { name: 'Carson Wallace' },
+  ]
+},
+{
+  name: 'Orlando Magic',
+  players: [
+    { name: 'Cole Anthony' },
+    { name: 'Franz Wagner' },
+    { name: 'Jalen Suggs' },
+    { name: 'Wendell Carter Jr.' },
+    { name: 'Paolo Banchero' },
+    { name: 'Joe Ingles' },
+    { name: 'Chuma Okeke' },
+    { name: 'Moritz Wagner' },
+  ]
+},
+{
+  name: 'Philadelphia 76ers',
+  players: [
+    { name: 'Joel Embiid' },
+    { name: 'Kyle Lowry' },
+    { name: 'Tyrese Maxey' },
+    { name: 'Tobias Harris' },
+    { name: "De'Anthony Melton" },
+    { name: 'Ricky Council IV' },
+    { name: 'Cameron Payne' },
+    { name: 'Buddy Hield' },
+    { name: 'Nico Batum' },
+    { name: 'Paul Reed' },
+  ]
+},
+{
+  name: 'Phoenix Suns',
+  players: [
+    { name: 'Devin Booker' },
+    { name: 'Bradley Beal' },
+    { name: 'Grayson Allen' },
+    { name: 'Josh Okogie' },
+    { name: 'Jusuf Nurkic' },
+    { name: 'Drew Eubanks' },
+    { name: 'Eric Gordon' },
+    { name: 'Kevin Durant' },
+  ]
+},
+{
+  name: 'Portland Trail Blazers',
+  players: [
+    { name: 'Scoot Henderson' },
+    { name: 'Anfernee Simons' },
+    { name: 'Jerami Grant' },
+    { name: 'Deandre Ayton' },
+    { name: 'Kris Murray' },
+    { name: 'Toumani Camara' },
+    { name: 'Matisse Thybulle' },
+  ]
+},
+{
+  name: 'Sacramento Kings',
+  players: [
+    { name: "De'Aaron Fox" },
+    { name: 'Domantas Sabonis' },
+    { name: 'Harrison Barnes' },
+    { name: 'Davion Mitchell' },
+    { name: 'Malik monk' },
+    { name: 'Keegan Murray' },
+    { name: 'Kevin Huerter' },
+    { name: 'Keon Ellis' },
+  ]
+},
+{
+  name: 'San Antonio Spurs',
+  players: [
+    { name: 'Victor Wembanyama' },
+    { name: 'Keldon Johnson' },
+    { name: 'Devin Vassell' },
+    { name: 'Jeremy Sochan' },
+    { name: 'Zach Collins' },
+    { name: 'Tre Jones' },
+    { name: 'Malaki Branham' },
+  ]
+},
+{
+  name: 'Toronto Raptors',
+  players: [
+    { name: 'Immanuel Quickley' },
+    { name: 'Gradey Dick' },
+    { name: 'Scottie Barnes' },
+    { name: 'RJ Barrett' },
+    { name: 'Gary Trent Jr.' },
+    { name: 'Bruce Brown' },
+    { name: 'Chris Boucher' },
+    { name: 'Jakob Poeltl' },
+    { name: 'Kelly Olynyk' },
+  ]
+},
+]
+
+        function togglePropDetails(betType) {
+            const propDetailsDiv = document.getElementById('propDetails');
+            if (betType === 'Prop') {
+                propDetailsDiv.style.display = 'block';
+            } else {
+                propDetailsDiv.style.display = 'none';
+            }
+        }
+
+        window.onload = function() {
+            const teamSelect = document.getElementById('team');
+            const playerSelect = document.getElementById('player');
+
+            nbaTeams.forEach(team => {
+                let option = new Option(team.name, team.name);
+                teamSelect.add(option);
+            });
+
+            teamSelect.onchange = function() {
+                playerSelect.innerHTML = '';
+                const selectedTeam = nbaTeams.find(team => team.name === this.value);
+                selectedTeam.players.forEach(player => {
+                    let option = new Option(player.name, player.name);
+                    playerSelect.add(option);
+                });
+            };
+
+            teamSelect.dispatchEvent(new Event('change'));
+        };
+    </script>
+    </div>
+</body>
+</html>
+<%- include('../partials/footer.ejs') %>

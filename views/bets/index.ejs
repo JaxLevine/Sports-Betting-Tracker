@@ -1,0 +1,79 @@
+<%- include('../partials/header2.0.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header-container">
+      <div class="summary">
+        <div class="summary-item">
+          <h3>Total Profit:</h3>
+          <p class="tp">$<%= totalProfit %></p>
+        </div>
+        <div class="summary-item">
+          <h3>Win/Loss:</h3>
+          <p><%= wins %>/<%= losses %></p>
+        </div>
+        <div class="summary-item">
+          <h3>Win Percentage:</h3>
+          <p class="wp"><%= winPercentage %>%</p>
+        </div>
+      </div>
+    </div>
+    <% if (Object.keys(groupedBets).length > 0) { %>
+      <% Object.keys(groupedBets).forEach((date) => { %>
+        <h3 class="date-heading"><%= date %></h3>
+        <table>
+          <thead>
+            <tr>
+              <th>League</th>
+              <th>Team</th>
+              <th>Player</th>
+              <th>Odds</th>
+              <th>Bet Type</th>
+              <th>Result</th>
+              <th>Profit/Loss</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% groupedBets[date].forEach((bet) => { %>
+              <tr>
+                <td><%= bet.league %></td>
+                <td><%= bet.team %></td>
+                <td>
+                  <% if (bet.betType === 'Prop') { %>
+                    <%= bet.player %>
+                  <% } else { %>
+                    N/A
+                  <% } %>
+                </td>
+                <td><%= bet.odds %></td>
+                <td>
+                  <% if (bet.betType === 'Prop') { %>
+                    <%= bet.propDetails %>
+                  <% } else { %>
+                    <%= bet.betType %>
+                  <% } %>
+                </td>
+                <td><%= bet.result %></td>
+                <td class="<%= bet.profitLoss >= 0 ? 'profit' : 'loss' %>">$<%= bet.profitLoss.toFixed() %></td>
+                <td>
+                  <form action="/bets/<%= bet._id %>?_method=DELETE" method="POST">
+                    <button type="submit">Delete</button>
+                  </form>
+                </td>          
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      <% }); %>
+    <% } else { %>
+      <p>No bets found.</p>
+    <% } %>
+  </div>
+<%- include('../partials/footer.ejs') %>
