@@ -1,4 +1,4 @@
-# Personalized Bet Tracker
+# Personalized Sports Bet Tracker
 A full-stack bet tracking application that allows users to log and track their sports bets.
 # Screenshot
 
