@@ -53,9 +53,7 @@ async function list(req, res) {
     let dynamicLosses = 0;
 
     bets.forEach(function (bet) {
-      const date = moment(bet.datePlaced)
-        .tz("America/New_York")
-        .format("dddd, MMMM D, YYYY");
+      const date = moment(bet.datePlaced).tz("America/New_York").format("dddd, MMMM D, YYYY");
       if (!groupedBets[date]) {
         groupedBets[date] = [];
       }
