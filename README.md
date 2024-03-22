@@ -11,6 +11,7 @@ A full-stack bet tracking application that allows users to log and track their s
 - Node.js
 - JavaScript
 - HTML
+- Heroku
 - CSS
 
 

@@ -32,8 +32,8 @@ async function create(req, res) {
     if (req.body.betType !== "Prop") {
       delete req.body.propDetails;
     }
-    const adjustedDatePlaced = moment.tz(datePlaced, "YYYY-MM-DD", "America/New_York").set({ hour: 12 }).toDate();
-    await Bet.create({...req.body,profitLoss,datePlaced: adjustedDatePlaced,}); //https://stackoverflow.com/questions/44385815/moment-timezones-js-how-to-convert-date-in-spesific-timezone-to-utc-disregardi (Stack Overflow)
+    const adjustedDatePlaced = moment.tz(datePlaced, "YYYY-MM-DD", "America/New_York").set({ hour: 12 }).toDate();//https://stackoverflow.com/questions/44385815/moment-timezones-js-how-to-convert-date-in-spesific-timezone-to-utc-disregardi (Stack Overflow)
+    await Bet.create({...req.body,profitLoss,datePlaced: adjustedDatePlaced,}); 
     res.redirect("/bets");
   } catch (error) {
     console.error("Creation error:", error);
@@ -69,15 +69,16 @@ async function list(req, res) {
         dynamicLosses++;
       }
     });
-
+    
     let totalWins = initialWins + dynamicWins;
     let totalLosses = initialLosses + dynamicLosses;
+
     const totalProfit = bets.reduce(function (sum, bet) {
       return sum + bet.profitLoss;
     }, 0);
+
     const totalGames = dynamicWins + dynamicLosses;
-    let winPercentage =
-      totalGames > 0 ? ((totalWins / (totalWins + totalLosses)) * 100).toFixed(2) : ((initialWins / (initialWins + initialLosses)) * 100).toFixed(2);
+    let winPercentage = totalGames > 0 ? ((totalWins / (totalWins + totalLosses)) * 100).toFixed(2) : ((initialWins / (initialWins + initialLosses)) * 100).toFixed(2);
 
     res.render("bets/index", {
       title: "All Bets",
