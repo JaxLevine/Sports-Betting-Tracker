@@ -6,8 +6,8 @@ A full-stack bet tracking application that allows users to log and track their s
 
 # Technologies Used
 
-- MongoDB
-- Express
+- Mongoose
+- EJS
 - Node.js
 - JavaScript
 - HTML
