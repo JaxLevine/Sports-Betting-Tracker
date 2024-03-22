@@ -24,6 +24,7 @@
         </div>
       </div>
     </div>
+    
     <% if (Object.keys(groupedBets).length > 0) { %>
       <% Object.keys(groupedBets).forEach((date) => { %>
         <h3 class="date-heading"><%= date %></h3>
@@ -76,7 +77,8 @@
             <% }); %>
           </tbody>
         </table>
-        <br><br><h2>Comments</h2>
+        
+        <br><br><h2>Comments</h2> 
         <% groupedBets[date].forEach((bet) => { %>
           <% if (bet.comments.length) { %>
             <ul>

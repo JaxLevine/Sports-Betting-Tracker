@@ -4,6 +4,8 @@ module.exports = {
   create,
 };
 
+//---------------------------------------------------Creates comment------------------------------------------------------------------//
+
 async function create(req, res) {
   try {
     const bet = await Bet.findById(req.params.id);

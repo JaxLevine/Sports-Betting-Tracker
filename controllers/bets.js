@@ -1,5 +1,5 @@
 const Bet = require("../models/bet");
-const moment = require("moment-timezone");
+const moment = require("moment-timezone"); //stack overflow
 
 module.exports = {
   new: newBet,
@@ -13,6 +13,8 @@ module.exports = {
 function newBet(req, res) {
   res.render("bets/new", { title: "Add New Bet" });
 }
+
+//--------------------------------------------------New Bet in database---------------------------------------------------------------//
 
 async function create(req, res) {
   try {
@@ -42,10 +44,12 @@ async function create(req, res) {
     });
   }
 }
+//-----------------------------------------------Renders bets grouped by date---------------------------------------------------------//
 
 async function list(req, res) {
   try {
     const bets = await Bet.find({}).sort({ datePlaced: -1 });
+    
     const groupedBets = {};
     let initialWins = 0;
     let initialLosses = 0;
@@ -53,7 +57,7 @@ async function list(req, res) {
     let dynamicLosses = 0;
 
     bets.forEach(function (bet) {
-      const date = moment(bet.datePlaced).tz("America/New_York").format("dddd, MMMM D, YYYY");
+      const date = moment(bet.datePlaced).tz("America/New_York").format("dddd, MMMM D, YYYY"); //(Stack Overflow)
       if (!groupedBets[date]) {
         groupedBets[date] = [];
       }
@@ -88,6 +92,7 @@ async function list(req, res) {
     res.status(500).send("Error fetching bets");
   }
 }
+//---------------------------------------------------Deletes bet by ID------------------------------------------------------------------//
 
 async function deleteBet(req, res) {
   try {
@@ -100,6 +105,8 @@ async function deleteBet(req, res) {
   }
 }
 
+//-------------------------------------------Recieves bet / Renders edit form----------------------------------------------------------//
+
 async function edit(req, res) {
   try {
     const bet = await Bet.findById(req.params.id);
@@ -109,6 +116,8 @@ async function edit(req, res) {
     res.status(500).send("Error fetching bet details for edit");
   }
 }
+
+//---------------------------------------------------Updates bet----------------------------------------------------------------------//
 
 async function update(req, res) {
   try {
